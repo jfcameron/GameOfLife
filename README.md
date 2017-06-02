@@ -1,5 +1,5 @@
 # GameOfLife
-![alt tag](http://jfcameron.github.io/Images/GD2j_Sprites/Big.png "")
+![alt tag](http://jfcameron.github.io/Github/GameOfLife/Gosper.png "")
 
 ## Description:
 Interactive cellular automata sim "Conway's Game Of Life" implemented in a DirectX Compute shader. Results drawn to texture and presented in a first person environment created in Unity.
