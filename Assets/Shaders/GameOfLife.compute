@@ -1,0 +1,249 @@
+﻿//
+// Name: GameOfLife
+// Description: Compute shader implementation of game of life.
+// The program's main function consists of 3 kernels, meant to be dispatched in sequence.
+// Main updates the gamestate.
+// UserInput handles user input.
+// CopyColorBuffer moves color data from the back buffer to the front buffer.
+//
+// Extra kernels for additional functionality
+// ClearBuffers sets all texels in both the front and back buffers to black.
+// GenGosper creates a gosper gun, which is a stable pattern that emits information
+// 
+//
+#pragma kernel Main
+#pragma kernel UserInput
+#pragma kernel CopyColorBuffer
+#pragma kernel ClearBuffers
+#pragma kernel GenGosper
+
+
+//**********
+// Constants
+//**********
+#define GOSPER_OFFSET 20
+
+//*********
+// Uniforms
+//*********
+RWTexture2D<float> _Input;
+RWTexture2D<float> _Output;
+float2 _TexelCoordinate;
+int _InputDown;
+
+//********
+// Kernels
+//********
+[numthreads(3, 3, 1)]
+void Main (uint3 dPos : SV_GroupID,  uint3 tPos : SV_GroupThreadID)
+{
+	//Calc offset
+    float2 offset = float2(dPos.x * 1, dPos.y * 1) + float2(tPos.x-2,tPos.y-2).xy + float2(0,0);
+    
+    //Collect neighbour data
+    float neighbourValue = 0;
+    
+    neighbourValue += int(_Input[offset + float2(-1,1)]);
+    neighbourValue += int(_Input[offset + float2( 0,1)]);
+    neighbourValue += int(_Input[offset + float2( 1,1)]);
+    
+    neighbourValue += int(_Input[offset + float2(-1,0)]);
+    neighbourValue += int(_Input[offset + float2( 1,0)]);
+    
+    neighbourValue += int(_Input[offset + float2(-1,-1)]);
+    neighbourValue += int(_Input[offset + float2( 0,-1)]);
+    neighbourValue += int(_Input[offset + float2( 1,-1)]);    
+    
+    //Evaluate
+    //Im alive
+    if ((_Input[offset + float2( 0,0)]) == 1.0)
+    {
+    	if (neighbourValue < 2 || neighbourValue > 3)
+    		_Output[offset + float2( 0,0)] = 0.0;
+    	else
+    		_Output[offset + float2( 0,0)] = 1;
+    	
+    }
+    //Im dead
+    else if (ceil(_Input[offset + float2( 0,0)]) == 0.0)
+    {
+    	if (neighbourValue == 3)
+    		_Output[offset + float2( 0,0)] = 1.0;
+    	
+    }
+                    
+}
+
+[numthreads(30, 30, 1)]
+void UserInput (uint3 Gid : SV_GroupID,uint3 GTid : SV_GroupThreadID)
+{
+	float2 offset = float2(Gid.x * 38, Gid.y * 38) + float2(GTid.x-29,GTid.y-29).xy;
+
+    //Handle input
+    if (_InputDown)
+	    _Output[offset + _TexelCoordinate] = 1.0;
+
+    ////if (_InputDown == 1)
+    //{//_TexelCoordinate
+	//    _Output[float2( 0,0)] = 1.0;
+    //
+    //}
+    
+}
+
+[numthreads(30, 30, 1)]
+void CopyColorBuffer (uint3 dtid : SV_DispatchThreadID)
+{
+	_Input[dtid.xy] = _Output[dtid.xy];
+
+}
+
+[numthreads(30, 30, 1)]
+void ClearBuffers(uint3 dtid : SV_DispatchThreadID)
+{
+	_Input[dtid.xy] = _Output[dtid.xy] = 0.0;
+
+}
+
+[numthreads(1, 1, 1)]
+void GenGosper(uint3 dPos : SV_GroupID)
+{
+	//In hindsight, there is no reason I didn't load this from a texture...
+	//LEFT BLOCK
+	if (dPos.x == 1 && dPos.y == 5 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 1 && dPos.y == 4 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 2 && dPos.y == 5 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 2 && dPos.y == 4 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	//MID SECTION
+	if (dPos.x == 11 && dPos.y == 3 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 11 && dPos.y == 4 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+	
+	if (dPos.x == 11 && dPos.y == 5 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+	
+	
+	if (dPos.x == 12 && dPos.y == 2 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 12 && dPos.y == 6 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+			
+	if (dPos.x == 13 && dPos.y == 1 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 13 && dPos.y == 7 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+		
+	if (dPos.x == 14 && dPos.y == 1 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 14 && dPos.y == 7 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+		
+	if (dPos.x == 15 && dPos.y == 4 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+		
+	if (dPos.x == 16 && dPos.y == 6 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 16 && dPos.y == 2 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+		
+	if (dPos.x == 17 && dPos.y == 5 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 17 && dPos.y == 4 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 17 && dPos.y == 3 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+	
+	
+	if (dPos.x == 18 && dPos.y == 4 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+		
+	if (dPos.x == 21 && dPos.y == 5 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+	
+	if (dPos.x == 21 && dPos.y == 6 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 21 && dPos.y == 7 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	
+	if (dPos.x == 22 && dPos.y == 5 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+	
+	if (dPos.x == 22 && dPos.y == 6 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 22 && dPos.y == 7 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+		
+	if (dPos.x == 23 && dPos.y == 4 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+	
+	if (dPos.x == 23 && dPos.y == 8 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+		
+	if (dPos.x == 25 && dPos.y == 4 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 25 && dPos.y == 3 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+	
+	if (dPos.x == 25 && dPos.y == 8 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 25 && dPos.y == 9 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+		
+	//RIGHT BLOCK
+	if (dPos.x == 35 && dPos.y == 7 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 35 && dPos.y == 6 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 36 && dPos.y == 7 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+		
+	if (dPos.x == 36 && dPos.y == 6 + GOSPER_OFFSET)
+		_Input[dPos.xy] = _Output[dPos.xy] = 1.0;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
