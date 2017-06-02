@@ -18,4 +18,6 @@ To interact with the simulation:
 * navigate to the computer with blue screen, left click the text icons to reset, adjust speed, pause, and generate a gosper gun in the Game of Life simulation
 
 ## Tools used:
-* Unity 5.4
+* [Unity 5.4](https://unity3d.com/)
+* [Visual Studio](https://www.visualstudio.com/)
+* [Blender](https://www.blender.org/)
