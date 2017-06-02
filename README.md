@@ -4,7 +4,7 @@
 ## Description:
 Interactive cellular automata sim "Conway's Game Of Life" implemented in a DirectX Compute shader. Results drawn to texture and presented in a first person environment created in Unity.
 
-The player is in a computer lab filled with computers running the sim. Interacting with these computers will adjust the sim state, speed, and allow the player to generate a [Gosper Glider Gun](https://github.com/jbox2d/jbox2d)
+The player is in a computer lab filled with computers running the sim. Interacting with these computers will adjust the sim state, speed, and allow the player to generate a [Gosper Glider Gun](https://en.wikipedia.org/wiki/Gun_%28cellular_automaton%29)
 
 ## Player Interaction
 To navigate the computer lab:
