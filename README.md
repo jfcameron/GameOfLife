@@ -6,7 +6,7 @@ Interactive cellular automata sim "Conway's Game Of Life" implemented in a Direc
 
 The player is in a computer lab filled with computers running the sim. Interacting with these computers will adjust the sim state, speed, and allow the player to generate a [Gosper Glider Gun](https://en.wikipedia.org/wiki/Gun_%28cellular_automaton%29)
 
-Win32 build available here: Win32(http://jfcameron.github.io/Github/GameOfLife/GameOfLife.7z)
+Win32 build available here: [Win32](http://jfcameron.github.io/Github/GameOfLife/GameOfLife.7z)
 *Requires DirectX11 capable hardware
 
 ## Player Interaction
