@@ -46,4 +46,4 @@ Corridor/Library/metadata/
 
 # output
 /Build/*
-/Build/*.*
+/Build/*.exe
