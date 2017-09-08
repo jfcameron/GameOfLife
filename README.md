@@ -4,6 +4,7 @@
 ## Description:
 ![asdf](https://img.shields.io/badge/development%20status-closed-lightgrey.svg)
 ![asdf](https://img.shields.io/badge/platforms-win32-lightgrey.svg)
+![asdf](https://img.shields.io/badge/license-unlicense-green.svg)
 
 Interactive cellular automata sim "Conway's Game Of Life" implemented in a DirectX Compute shader. Results drawn to texture and presented in a first person environment created in Unity.
 
